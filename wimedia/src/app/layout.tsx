@@ -1,3 +1,4 @@
+import Footer from './components/Footer'
 import './globals.css'
 import { Poppins } from 'next/font/google'
 
@@ -9,14 +10,22 @@ const poppins = Poppins({
 })
 
 export const metadata = {
-  title: 'My App',
-  description: 'Your description',
+  title: 'WIMEEDIA',
+  description: 'Tõstame sinu sotsiaalmeedia jalule',
+  icon: '/favicon.ico',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${poppins.variable}`}>
-      <body className="font-poppins">{children}</body>
+        <head>
+        <link
+          href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-poppins">{children}
+      </body>
     </html>
   )
 }

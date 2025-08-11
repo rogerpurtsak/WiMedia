@@ -8,6 +8,15 @@ export default function Navbar() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen)
 
+  const NAV = [
+  { label: 'Meist',      href: '#meist' },
+  { label: 'Koostööd',   href: '#koostood' },
+  { label: 'Kontakt',    href: '#kontakt' },
+  { label: 'Teenused',    href: '#teenused' },
+  { label: 'Tehtud tööd', href: '#tood' },
+  ];
+
+
   return (
     <nav className="w-full px-6 py-4 flex justify-between items-center bg-[#FAEFEF] rounded-[24px] shadow-md font-poppins relative z-50">
       
@@ -22,14 +31,14 @@ export default function Navbar() {
       </div>
 
       
-      <ul className="hidden md:flex gap-8 text-black font-medium items-center">
-        {['Meist', 'Koostööd', 'Kontaktid'].map((item) => (
-          <li key={item}>
+    <ul className="hidden md:flex gap-8 text-black font-medium items-center">
+      {NAV.slice(0,4).map(({label, href}) => (
+        <li key={label}>
             <a
-              href={`#${item.toLowerCase()}`}
+              href={href}
               className="inline-block transform transition-all duration-300 hover:scale-105 bg-white text-black rounded-full px-6 py-2 hover:bg-black hover:text-white shadow-md hover:shadow-xl"
             >
-              {item}
+              {label}
             </a>
           </li>
         ))}
@@ -45,7 +54,7 @@ export default function Navbar() {
       
       <div className="hidden md:block">
         <a
-          href="#tehtud-tööd"
+          href="#tood"
           className="inline-block transform transition-all duration-300 hover:scale-105 bg-white text-black rounded-full px-6 py-2 hover:bg-black hover:text-white shadow-md hover:shadow-xl font-medium"
         >
           Tehtud tööd
@@ -54,17 +63,20 @@ export default function Navbar() {
 
       
       {menuOpen && (
-        <div className="absolute top-full left-0 w-full bg-[#FAEFEF] shadow-md rounded-b-[24px] flex flex-col items-center gap-4 py-6 md:hidden animate-fade-in-down">
-          {['Meist', 'Koostööd', 'Kontaktid', 'Tehtud tööd'].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              onClick={() => setMenuOpen(false)}
-              className="text-black font-medium text-lg hover:text-white hover:bg-black px-6 py-2 rounded-full transition-all"
-            >
-              {item}
-            </a>
-          ))}
+        <div className="fixed inset-0 z-[70] md:hidden">
+          <button className="absolute inset-0 bg-black/30" onClick={()=>setMenuOpen(false)} />
+          <div className="absolute left-4 right-4 top-20 bg-[#FAEFEF] rounded-2xl shadow-xl p-6 flex flex-col items-center gap-4">
+            {NAV.map(({label, href}) => (
+              <a
+                key={label}
+                href={href}
+                onClick={()=>setMenuOpen(false)}
+                className="w-full text-center text-black font-medium text-lg hover:text-white hover:bg-black px-6 py-2 rounded-full transition-all"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
         </div>
       )}
     </nav>

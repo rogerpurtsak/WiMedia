@@ -3,40 +3,52 @@
 import { useState } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
-type Slide = {
-  logos: { src: string; alt: string }[];
+type Company = {
+  logo: { src: string; alt: string };
   quote: string;
   author: string;
   role: string;
   link?: string;
 };
 
-const slides: Slide[] = [
+const companies: Company[] = [
   {
-    logos: [
-      { src: '/siluett.png', alt: 'Siluett' },
-      { src: '/bauhof.png', alt: 'Bauhof' },
-      { src: '/douglas.png', alt: 'Douglas' },
-    ],
+    logo: { src: '/siluett.png', alt: 'Siluett' },
     quote:
       'Soovitan, sest kõik kontaktid on olnud vajadusel väga operatiivsed ja ladusad. Keegi pole kuhugi ära kadunud ega hakanud asjadega venitama. Usaldusväärne.',
     author: 'Roger Purtsak',
     role: 'CEO',
     link: 'https://siluettpood.ee',
   },
+  {
+    logo: { src: '/bauhof.png', alt: 'Bauhof' },
+    quote:
+      'Koostöö oli kiire ja professionaalne. Sisu tõi tulemusi ning tiim oli alati olemas.',
+    author: 'Maris T.',
+    role: 'Marketing Manager',
+    link: 'https://www.bauhof.ee',
+  },
+  {
+    logo: { src: '/douglas.png', alt: 'Douglas' },
+    quote:
+      'Väga kvaliteetne teostus ja paindlik lähenemine. Soovitame!',
+    author: 'K. Laan',
+    role: 'Brand Lead',
+    link: 'https://www.douglas.ee',
+  },
 ];
 
 export default function Partners() {
   const [idx, setIdx] = useState(0);
-  const cur = slides[idx];
 
-  const prev = () => setIdx((i) => (i === 0 ? slides.length - 1 : i - 1));
-  const next = () => setIdx((i) => (i === slides.length - 1 ? 0 : i + 1));
+  const prev = () => setIdx((i) => (i === 0 ? companies.length - 1 : i - 1));
+  const next = () => setIdx((i) => (i === companies.length - 1 ? 0 : i + 1));
+
+  const cur = companies[idx];
 
   return (
-    <section id="koostööd" className="relative px-6 md:px-12 py-16 md:py-24">
-      
-      <h2 className="font-poppins text-black text-5xl md:text-7xl font-light tracking-tight mb-10 md:mb-14">
+    <section id="koostood" className="relative px-6 md:px-12 py-16 md:py-24">
+      <h2 className="font-poppins text-black text-5xl md:text-8xl font-light tracking-tight mb-10 md:mb-20 text-shadow">
         KOOSTÖÖD
       </h2>
 
@@ -50,13 +62,23 @@ export default function Partners() {
         </button>
 
         <div className="flex-1 grid grid-cols-3 items-center justify-items-center gap-6 md:gap-10">
-          {cur.logos.map((l) => (
-            <img
-              key={l.alt}
-              src={l.src}
-              alt={l.alt}
-              className="h-10 md:h-14 object-contain opacity-90 hover:opacity-100 transition"
-            />
+          {companies.map((c, i) => (
+            <button
+              key={c.logo.alt}
+              onClick={() => setIdx(i)}
+              className={`group rounded-lg transition focus:outline-none focus:ring-2 focus:ring-black/40 ${
+                i === idx ? 'opacity-100' : 'opacity-60 hover:opacity-100'
+              }`}
+              aria-label={`Vali ${c.logo.alt}`}
+            >
+              <img
+                src={c.logo.src}
+                alt={c.logo.alt}
+                className={`h-10 md:h-14 object-contain transition ${
+                  i === idx ? 'scale-105 drop-shadow' : 'scale-100'
+                }`}
+              />
+            </button>
           ))}
         </div>
 
@@ -69,14 +91,15 @@ export default function Partners() {
         </button>
       </div>
 
-      <div className="flex flex-col items-center text-center justify-center h-64 mt-10 md:mt-12 rounded-[18px] border border-black/70 shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-5 md:p-7">
-        <p className="font-poppins text-sm md:text-base text-black/90 leading-relaxed">
+      <div className="flex flex-col items-center text-center justify-center min-h-[14rem] mt-10 md:mt-12 rounded-[18px] border border-black/70 shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-5 md:p-7">
+        <p className="font-poppins text-sm md:text-base text-black/90 leading-relaxed max-w-3xl">
           “{cur.quote}”
         </p>
 
         <div className="mt-5">
-          <p className="text-center font-poppins font-semibold">
-            {cur.author} <span className=" text-center font-normal text-black/70">/ {cur.role}</span>
+          <p className="font-poppins font-semibold">
+            {cur.author}{' '}
+            <span className="font-normal text-black/70">/ {cur.role}</span>
           </p>
           {cur.link && (
             <a
@@ -91,8 +114,9 @@ export default function Partners() {
         </div>
       </div>
 
+
       <div className="mt-6 flex justify-center gap-2">
-        {slides.map((_, i) => (
+        {companies.map((_, i) => (
           <button
             key={i}
             onClick={() => setIdx(i)}
