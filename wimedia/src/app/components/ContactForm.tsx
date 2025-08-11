@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { useRef, useState } from 'react';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 
 export default function ContactForm() {
   const [pending, setPending] = useState(false);
   const [ok, setOk] = useState<boolean | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const tRef = useRef<TurnstileInstance | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -14,11 +15,11 @@ export default function ContactForm() {
     setOk(null);
 
     const form = new FormData(e.currentTarget);
-    const first = form.get('first') || '';
-    const last = form.get('last') || '';
-    const email = form.get('email') || '';
-    const message = form.get('message') || '';
-    const honey = form.get('company') || '';
+    const first = String(form.get('first') ?? '');
+    const last = String(form.get('last') ?? '');
+    const email = String(form.get('email') ?? '');
+    const message = String(form.get('message') ?? '');
+    const honey = String(form.get('company') ?? '');
 
     const res = await fetch('/api/contact', {
       method: 'POST',
@@ -34,13 +35,18 @@ export default function ContactForm() {
 
     setPending(false);
     setOk(res.ok);
-    if (res.ok) e.currentTarget.reset();
+
+    // reset form + captcha for next submission
+    if (res.ok) {
+      (e.currentTarget as HTMLFormElement).reset();
+    }
     setToken(null);
+    tRef.current?.reset();
   }
 
   return (
     <section id="kontakt" className="px-6 md:px-12 py-16 md:py-24">
-
+      {/* Title */}
       <div className="text-center mb-10">
         <h2 className="font-poppins font-bold text-3xl md:text-6xl text-black mb-10">
           Kirjuta meile
@@ -50,9 +56,10 @@ export default function ContactForm() {
         </p>
       </div>
 
+      {/* Form container */}
       <div className="max-w-2xl mx-auto bg-[#FAEFEF]/50 rounded-2xl p-6 md:p-8 shadow-sm">
         <form className="space-y-5" onSubmit={onSubmit}>
-
+          {/* Name row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               name="first"
@@ -78,6 +85,7 @@ export default function ContactForm() {
             required
           />
 
+          {/* Message */}
           <textarea
             name="message"
             placeholder="Räägi meile enda projektist"
@@ -86,6 +94,7 @@ export default function ContactForm() {
             required
           />
 
+          {/* Honeypot (hidden field) */}
           <input
             type="text"
             name="company"
@@ -94,11 +103,30 @@ export default function ContactForm() {
             className="hidden"
           />
 
+          {/* Turnstile */}
           <Turnstile
+            ref={tRef}
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-            onSuccess={setToken}
+            onSuccess={(t) => setToken(t)}
+            onExpire={() => {
+              setToken(null);
+              tRef.current?.reset();
+            }}
+            onError={() => {
+              setToken(null);
+              tRef.current?.reset();
+            }}
+            options={{
+              retry: 'auto',
+              retryInterval: 5000,
+              refreshExpired: 'auto',
+              refreshTimeout: 'auto',
+              execution: 'render',
+              appearance: 'always',
+            }}
           />
 
+          {/* Button */}
           <button
             type="submit"
             disabled={pending || !token}
@@ -107,6 +135,7 @@ export default function ContactForm() {
             {pending ? 'Saatmine...' : 'Võta ühendust'}
           </button>
 
+          {/* Feedback */}
           {ok === true && (
             <p className="text-green-600 font-poppins">Aitäh! Võtame teiega peagi ühendust.</p>
           )}
@@ -116,6 +145,7 @@ export default function ContactForm() {
         </form>
       </div>
 
+      {/* Social icons */}
       <div className="flex justify-center gap-6 mt-8 text-black/50">
         <a href="#" aria-label="Instagram" className="hover:text-black">
           <i className="ri-instagram-line text-2xl"></i>
