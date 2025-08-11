@@ -1,13 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-import {
-  RiInstagramLine,
-  RiFacebookCircleLine,
-  RiTiktokLine,
-  RiLinkedinLine,
-} from 'react-icons/ri';
-
 export default function Footer() {
   return (
     <footer

@@ -7,7 +7,7 @@ function isValidEmail(e: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 }
 
-const dbg = (...args:any[]) => console.log("[CONTACT]", ...args);
+const dbg = (...args: unknown[]) => console.log("[CONTACT]", ...args);
 
 export async function POST(req: Request) {
   try {
@@ -19,20 +19,19 @@ export async function POST(req: Request) {
     if (!isValidEmail(email)) {
       return NextResponse.json({ ok: false, error: "Invalid email" }, { status: 400 });
     }
-
     if (honey) return NextResponse.json({ ok: true });
 
-   const form = new URLSearchParams();
+    const form = new URLSearchParams();
     form.append("secret", process.env.TURNSTILE_SECRET_KEY || "");
     form.append("response", turnstileToken || "");
     const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-    method: "POST",
-    body: form,
+      method: "POST",
+      body: form,
     });
-    const verify = await verifyRes.json();
+    const verify: { success: boolean; [k: string]: unknown } = await verifyRes.json();
     dbg("turnstile.verify", verify);
     if (!verify.success) {
-    return NextResponse.json({ ok: false, error: "Bot check failed", details: verify }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Bot check failed", details: verify }, { status: 400 });
     }
 
     const transporter = nodemailer.createTransport({
@@ -59,9 +58,12 @@ export async function POST(req: Request) {
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
     });
 
-    return NextResponse.json({ ok: true });
-  } catch (err: any) {
+    console.log("[CONTACT] mail.sent", info.messageId);
 
+    return NextResponse.json({ ok: true });
+  } catch (err: unknown) {
+    // was: any
+    console.error("[CONTACT] Error:", err);
     return NextResponse.json({ ok: false, error: "Email send failed" }, { status: 502 });
   }
 }
