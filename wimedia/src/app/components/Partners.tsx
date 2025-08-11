@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import Image from "next/image";
 
 type Company = {
   logo: { src: string; alt: string };
@@ -71,9 +73,11 @@ export default function Partners() {
               }`}
               aria-label={`Vali ${c.logo.alt}`}
             >
-              <img
+              <Image
                 src={c.logo.src}
                 alt={c.logo.alt}
+                width={56}
+                height={56}
                 className={`h-10 md:h-14 object-contain transition ${
                   i === idx ? 'scale-105 drop-shadow' : 'scale-100'
                 }`}
@@ -102,14 +106,14 @@ export default function Partners() {
             <span className="font-normal text-black/70">/ {cur.role}</span>
           </p>
           {cur.link && (
-            <a
+            <Link
               href={cur.link}
               target="_blank"
               rel="noreferrer"
               className="text-black/70 underline-offset-2 hover:underline"
             >
               {new URL(cur.link).hostname}
-            </a>
+            </Link>
           )}
         </div>
       </div>

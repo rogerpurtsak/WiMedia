@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from "next/image";
 
 const filters = ['Kõik', 'Videod', 'Pildid', 'Reelid'];
 
@@ -39,24 +40,26 @@ export default function Works() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {images.map((img, i) => (
-          <div
-            key={i}
-            className={`overflow-hidden rounded-[16px] ${
-              img.size === 'large'
-                ? 'col-span-2 row-span-2'
-                : 'col-span-1 row-span-1'
-            }`}
-          >
-            <img
-              src={img.src}
-              alt={img.alt}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-            />
-          </div>
-        ))}
-      </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {images.map((img, i) => (
+                <div
+                key={i}
+                className={`overflow-hidden rounded-[16px] ${
+                    img.size === "large"
+                    ? "col-span-2 row-span-2"
+                    : "col-span-1 row-span-1"
+                }`}
+                >
+                <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={800}
+                    height={800}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+                </div>
+            ))}
+            </div>
     </section>
   );
 }
