@@ -76,8 +76,8 @@ export default function Partners() {
               <Image
                 src={c.logo.src}
                 alt={c.logo.alt}
-                width={56}
-                height={56}
+                width={200}
+                height={200}
                 className={`h-10 md:h-14 object-contain transition ${
                   i === idx ? 'scale-105 drop-shadow' : 'scale-100'
                 }`}
